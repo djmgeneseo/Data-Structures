@@ -71,23 +71,25 @@ void insertInOrder(node * newNode, node * head) {
 	insert(pred, newNode, head);
 } // void insertInOrder(node * newNode, node * head)
 
-// Add the # of degrees from each node (vertex) in list
-bool isListDegreeEven(node * head) {
+
+// Check whether sum of degrees in a give graph is even
+bool isDegreeSequence(node * head) {
 	node*temp = new node;
 	temp=(*head).next;
 	
 	int i = (*temp).d1;
 
-	while ((*temp).next !=0) { // loop through list until last node
+	// Add the # of degrees from each node (vertex) in list
+	while ((*temp).next !=0) { 		
 		temp = (*temp).next;
 		i = i + (*temp).d1;
 	}
 	
-	// if sum of degrees is even
+	// if sum of degrees is odd
 	if(i%2 !=0) {return false;}
-	// else sum of degrees is odd
+	// else sum of degrees is even
 	else {return true;}
-} // bool isListDegreeEven(node * head)
+} // bool isDegreeSequence(node * head)
 
 void remove(node * pred, node * head) {
 	node * elim = (*head).next;
@@ -105,7 +107,7 @@ void main(){
 	
 	char label='.';
 	int deg;
-	bool degEven;
+	bool degBool;
 
 	// Initialize list: (*phead).d1 is the total # of vertices
 	node*phead = createList();
@@ -142,18 +144,18 @@ void main(){
 
 	cout << endl;
 
-	// Check whether first list is a graphic sequence
-	degEven = isListDegreeEven(phead);
+	// Check whether first list is a degree sequence
+	degBool = isDegreeSequence(phead);
 	
 	// YES
-	if((*phead).d1>0 && degEven) {
-		cout << "******************************************************************" << endl;
-		cout << "* YES! This is a valid graphic sequence for an UNDIRECTED graph. *" << endl;
-		cout << "******************************************************************" << endl;
+	if((*phead).d1>0 && degBool) {
+		cout << "*****************************************************************" << endl;
+		cout << "* YES! This is a valid degree sequence for an UNDIRECTED graph. *" << endl;
+		cout << "*****************************************************************" << endl;
 	} else { // NO
-		cout << "*********************************************************************" << endl;
-		cout << "* NO! This is NOT a valid graphic sequence for an UNDIRECTED graph. *" << endl;
-		cout << "*********************************************************************" << endl;
+		cout << "********************************************************************" << endl;
+		cout << "* NO! This is NOT a valid degree sequence for an UNDIRECTED graph. *" << endl;
+		cout << "********************************************************************" << endl;
 	}
 
 	cout << endl;
