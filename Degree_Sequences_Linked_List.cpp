@@ -15,27 +15,27 @@
 #include <iostream>
 using namespace std;
 
-struct node {
+struct vertex {
 	char label;
 	int d1;
 
-	node * next;
-}; // node
+	vertex * next;
+}; // vertex
 
-node * createList() {
-	node*phead = new node;
+vertex * createList() {
+	vertex*phead = new vertex;
 	(*phead).d1=0;
 	(*phead).next=0;
 	return phead;
 }
 
-// prints amount of nodes, and the vertex label along with its degree in a list on a 
+// prints amount of vertexs, and the vertex label along with its degree in a list on a 
 // single line.
-void printList(node * head) {
+void printList(vertex * head) {
 	cout << endl << "List contains " << (*head).d1 << " vertices: ";
 
 	if((*head).next!=0) {
-		node * temp = (*head).next;
+		vertex * temp = (*head).next;
 		cout << (*temp).label << "(" << (*temp).d1 << ") ";
 
 	while ((*temp).next!=0) {
@@ -45,22 +45,22 @@ void printList(node * head) {
 	}
 
 	cout << endl << endl;
-} // void printList(node * phead)
+} // void printList(vertex * phead)
 
-void advance(node *& ptr) {
+void advance(vertex *& ptr) {
 ptr = (*ptr).next;
-} // void advance(node *& ptr)
+} // void advance(vertex *& ptr)
 
-void insert(node * pred, node * newNode, node * head) {
-	(*newNode).next = (*pred).next;
-	(*pred).next = newNode;
+void insert(vertex * pred, vertex * newvertex, vertex * head) {
+	(*newvertex).next = (*pred).next;
+	(*pred).next = newvertex;
 	(*head).d1++;
-} // void insert(node * pred, node * newNode, node * phead)
+} // void insert(vertex * pred, vertex * newvertex, vertex * phead)
 
-void insertInOrder(node * newNode, node * head) {
-	node*pred = head;
-	int i = (*newNode).d1;
-	node*succ = (*pred).next;
+void insertInOrder(vertex * newvertex, vertex * head) {
+	vertex*pred = head;
+	int i = (*newvertex).d1;
+	vertex*succ = (*pred).next;
 
 	//search
 	while(succ!= 0 && i < (*succ).d1) {
@@ -68,38 +68,26 @@ void insertInOrder(node * newNode, node * head) {
 		advance(succ);
 	}
 
-	insert(pred, newNode, head);
-} // void insertInOrder(node * newNode, node * head)
+	insert(pred, newvertex, head);
+} // void insertInOrder(vertex * newvertex, vertex * head)
 
-
-// Check whether sum of degrees in a give graph is even
-bool isDegreeSequence(node * head) {
-	node*temp = new node;
+// Add the # of degrees from each vertex (vertex) in list
+bool isListDegreeEven(vertex * head) {
+	vertex*temp = new vertex;
 	temp=(*head).next;
 	
 	int i = (*temp).d1;
 
-	// Add the # of degrees from each node (vertex) in list
-	while ((*temp).next !=0) { 		
+	while ((*temp).next !=0) { // loop through list until last vertex
 		temp = (*temp).next;
 		i = i + (*temp).d1;
 	}
 	
-	// if sum of degrees is odd
+	// if sum of degrees is even
 	if(i%2 !=0) {return false;}
-	// else sum of degrees is even
+	// else sum of degrees is odd
 	else {return true;}
-} // bool isDegreeSequence(node * head)
-
-void remove(node * pred, node * head) {
-	node * elim = (*head).next;
-	
-	cout << "Deleting vertex " << (*elim).label << ": deg = " << (*elim).d1 << endl << endl;
-	(*pred).next = (*elim).next;
-	delete elim;
-
-	(*head).d1--;
-} // void remove(node * pred, node * head)
+} // bool isListDegreeEven(vertex * head)
 
 void main(){
 	cout << "David Murphy - Discrete Math Practice - 09/19/17" << endl;
@@ -107,15 +95,15 @@ void main(){
 	
 	char label='.';
 	int deg;
-	bool degBool;
+	bool degEven;
 
 	// Initialize list: (*phead).d1 is the total # of vertices
-	node*phead = createList();
+	vertex*phead = createList();
 	
 	// PROMPT USER INPUT
 	while(label != '/') {
-		// create new node
-		node*newNode = new node;
+		// create new vertex
+		vertex*newvertex = new vertex;
 		
 		// prompt for vertex label and degree #
 		cout << "Label a vertex using one character: ";
@@ -132,10 +120,10 @@ void main(){
 			cin >> deg;
 		}
 		
-		// assign values to node; insert node into list
-		(*newNode).d1=deg;
-		(*newNode).label=label;
-		insertInOrder(newNode, phead);
+		// assign values to vertex; insert vertex into list
+		(*newvertex).d1=deg;
+		(*newvertex).label=label;
+		insertInOrder(newvertex, phead);
 
 		// Print
 		printList(phead);
@@ -144,18 +132,18 @@ void main(){
 
 	cout << endl;
 
-	// Check whether first list is a degree sequence
-	degBool = isDegreeSequence(phead);
+	// Check whether first list is a graphic sequence
+	degEven = isListDegreeEven(phead);
 	
 	// YES
-	if((*phead).d1>0 && degBool) {
-		cout << "*****************************************************************" << endl;
-		cout << "* YES! This is a valid degree sequence for an UNDIRECTED graph. *" << endl;
-		cout << "*****************************************************************" << endl;
+	if((*phead).d1>0 && degEven) {
+		cout << "******************************************************************" << endl;
+		cout << "* YES! This is a valid graphic sequence for an UNDIRECTED graph. *" << endl;
+		cout << "******************************************************************" << endl;
 	} else { // NO
-		cout << "********************************************************************" << endl;
-		cout << "* NO! This is NOT a valid degree sequence for an UNDIRECTED graph. *" << endl;
-		cout << "********************************************************************" << endl;
+		cout << "*********************************************************************" << endl;
+		cout << "* NO! This is NOT a valid graphic sequence for an UNDIRECTED graph. *" << endl;
+		cout << "*********************************************************************" << endl;
 	}
 
 	cout << endl;
