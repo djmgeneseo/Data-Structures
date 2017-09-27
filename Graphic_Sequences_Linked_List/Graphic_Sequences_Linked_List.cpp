@@ -65,13 +65,13 @@ void insert(vertex * pred, vertex * newVertex, vertex * head) {
 	(*newVertex).next = (*pred).next;
 	(*pred).next = newVertex;
 	(*head).d1++;
-} // void insert(vertex * pred, vertex * newvertex, vertex * phead)
+} // void insert(vertex * pred, vertex * newVertex, vertex * phead)
 
 /* The position of the vertices along the linked list is contingent on their assigned degree.
  * The vertices will arrange from that of highest degree to lowest.
  *
  *	Calls functions:
- *		- advancd()
+ *		- advance()
  *		- insert()
 */
 void insertInOrder(vertex * newVertex, vertex * head) {
@@ -107,7 +107,7 @@ bool isDegreeSequence(vertex * head) {
 	
 	int i = (*temp).d1;
 	
-	// loop through list, incrementing the degree value of each vertex in graph
+	// loop through list, accumulating the total degree value of each vertex in graph
 	while ((*temp).next !=0) { 
 		advance(temp);
 		i = i + (*temp).d1;
@@ -151,21 +151,20 @@ void printIfGraphic(bool graphBool) {
  *	Calls functions:
  *
 */
-bool isGraphicSequence(vertex * head) {
-	vertex * succ = (*head).next;
+bool isGraphicSequence(vertex * largestDeg, vertex * head) {
 	
-	// RETURN TRUE: if the first vertex's degree quantity is less than available vertices
-	if((*succ).d1<(*head).d1) {
+	// RETURN TRUE: if the largest vertex's degree quantity is less than available vertices
+	if((*largestDeg).d1<(*head).d1) {
 		return true;
 	}
-	// RETURN TRUE: else if verticies with available endpoints do NOT exist
+	// RETURN TRUE: else if verticies with available endpoints do NOT exist, we reached end of list
 	else if((*head).d1==0) {
 		return true;
 	}
 	else{return false;}
 } // bool isGraphicSequence(vertex * head)
 
-/* MUST CHECK: 
+/* CHECKS BOTH: 
  *	- if degree sequence: the sum of degrees is even  
  *  - if graphic sequence: the first vertex's degree quantity does NOT exceed available vertices
  *	
@@ -175,11 +174,11 @@ bool isGraphicSequence(vertex * head) {
  *		- printIfDegree()
  *		- printIfGraphic()
 */	
-bool checkIfValidSequence(vertex * head) {
+bool checkIfValidSequence(vertex * largestDeg, vertex * head) {
 	bool degBool, graphBool;
 	
 	degBool = isDegreeSequence(head);  
-	graphBool = isGraphicSequence(head);
+	graphBool = isGraphicSequence(largestDeg, head);
 	printIfDegree(degBool);
 	printIfGraphic(graphBool);
 
@@ -206,6 +205,12 @@ void decrementSequence(vertex * pred, vertex * head) {
 	cout << endl << "Attempting to connect vertex " << (*dec).label << "(" << degNum << ")" 
 		<< " to the " << (*head).d1 -1 << " other vertices:" << endl;
 	
+	// If the vertex's degree exceeds vertices with available endpoints
+	//if(degNum>((*head).d1-1)) {
+	//	printIfGraphic(isGraphicSequence(dec,head));
+	//	return;
+	//}
+
 	(*dec).d1=0;
 	(*head).d1--;
 
@@ -235,7 +240,7 @@ void connectVertices(vertex * head) {
 	bool endConnecting = false;
 
 	// Check if sequence is BOTH a valid degree AND graphic sequence
-	bool seqIsValid = checkIfValidSequence(head);
+	bool seqIsValid = checkIfValidSequence(succ, head);
 
 	// Decrement sequence while sequence check == true, and while a vertex contains 
 	// available endpoints 
@@ -257,7 +262,7 @@ void connectVertices(vertex * head) {
 		// print
 		printList(head);
 		// check if list is still a valid degree/graphic sequence
-		seqIsValid=checkIfValidSequence(head);
+		seqIsValid=checkIfValidSequence(succ, head);
 		// advance onto next vertex
 		
 	} //while
@@ -285,6 +290,7 @@ void main(){
 		cout << "Label a vertex using one character: ";
 		cin >> label;
 
+		// A '/' input terminates the selection interface prompt
 		if(label=='/'){break;}
 		cout << "Insert the vertex's degree (deg>0): ";
 		cin >> deg;
