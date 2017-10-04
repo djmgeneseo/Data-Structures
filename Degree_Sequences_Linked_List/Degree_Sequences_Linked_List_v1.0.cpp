@@ -1,6 +1,7 @@
 // David Murphy
 // 09/19/17
 // Discrete Math Practice
+// v1.0
 
 /*
  *	A degree sequence is a sequence of integers that represents the degrees of each vertex
@@ -114,6 +115,7 @@ bool isDegreeSequence(vertex * head) {
 } // bool isListDegreeEven(vertex * head)
 
 void main(){
+	cout << "v1.0" << endl;
 	cout << "David Murphy - Discrete Math Practice - 09/19/17" << endl;
 	cout << "Is your degree sequence a valid sequence for an undirected graph?" << endl << endl;
 	
@@ -165,11 +167,11 @@ void main(){
 	// YES
 	if((*phead).d1>0 && degBool) {
 		cout << "******************************************************************" << endl;
-		cout << "* YES! This is a valid graphic sequence for an UNDIRECTED graph. *" << endl;
+		cout << "* YES! This is a valid degree sequence for an UNDIRECTED graph. *" << endl;
 		cout << "******************************************************************" << endl;
 	} else { // NO
 		cout << "*********************************************************************" << endl;
-		cout << "* NO! This is NOT a valid graphic sequence for an UNDIRECTED graph. *" << endl;
+		cout << "* NO! This is NOT a valid degree sequence for an UNDIRECTED graph. *" << endl;
 		cout << "*********************************************************************" << endl;
 	}
 

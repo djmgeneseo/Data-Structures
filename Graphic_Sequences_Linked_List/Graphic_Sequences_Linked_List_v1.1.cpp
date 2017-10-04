@@ -1,6 +1,7 @@
 // David Murphy
-// 09/25/17
+// 10/04/17
 // Discrete Math Practice
+// v1.1
 
 /*
  *	A graphic sequence is a sequence of integers that is the degree sequence
@@ -19,10 +20,11 @@
 */
 
 #include <iostream>
+#include <sstream>
+#include <string>
 using namespace std;
 
 struct vertex {
-	char label;
 	int d1;
 
 	vertex * next;
@@ -34,25 +36,6 @@ vertex * createList() {
 	(*phead).next=0;
 	return phead;
 } // vertex * createList()
-
-/* Prints the amount of vertices, and the degree value of each vertex in the list on a 
- * single line. The order is determined by the order of the link list, from head -> tail.
- */
-void printList(vertex * head) {
-	cout << endl << "List now contains " << (*head).d1 << " vertices with available endpoints: ";
-
-	if((*head).next!=0) {
-		vertex * temp = (*head).next;
-		cout << (*temp).label << "(" << (*temp).d1 << ") ";
-
-		while ((*temp).next!=0) {
-			temp=(*temp).next;
-			cout << (*temp).label << "(" << (*temp).d1 << ") ";
-			}
-	} //if
-
-	cout << endl << endl;
-} // void printList(vertex * phead)
 
 void advance(vertex *& ptr) {
 ptr = (*ptr).next;
@@ -98,7 +81,6 @@ bool isDegreeSequence(vertex * head) {
 	
 	// RETURN FALSE: No vertices remain, which means that the edges of each vertex found a neighbor
 	if((*head).next==0){
-		cout << "No vertices remain!" << endl;
 		return false;
 	}
 	
@@ -119,23 +101,9 @@ bool isDegreeSequence(vertex * head) {
 	else {return true;}
 } // isDegreeSequence(vertex * head)
 
-void printIfDegree(bool degBool) {
-	// YES, is a degree sequence
-	if(degBool) {
-		cout << "*****************************************************************" << endl;
-		cout << "* YES! This is a valid DEGREE sequence for an UNDIRECTED graph. *" << endl;
-		cout << "*****************************************************************" << endl << endl;
-	} 
-	else { // NO, is NOT a degree sequence
-		cout << "********************************************************************" << endl;
-		cout << "* NO! This is NOT a valid DEGREE sequence for an UNDIRECTED graph. *" << endl;
-		cout << "********************************************************************" << endl << endl;
-	}
-} // void checkIfDegree(bool degBool)
-
-void printIfGraphic(bool graphBool) {
+void printIfGraphic(bool graphBool, bool degBool) {
 	// YES, is a graphic sequence
-	if(graphBool) {
+	if(graphBool && degBool) {
 		cout << "******************************************************************" << endl;
 		cout << "* YES! This is a valid GRAPHIC sequence for an UNDIRECTED graph. *" << endl;
 		cout << "******************************************************************" << endl << endl;
@@ -179,8 +147,6 @@ bool checkIfValidSequence(vertex * largestDeg, vertex * head) {
 	
 	degBool = isDegreeSequence(head);  
 	graphBool = isGraphicSequence(largestDeg, head);
-	printIfDegree(degBool);
-	printIfGraphic(graphBool);
 
 	if(degBool && graphBool){
 		return true;
@@ -200,10 +166,6 @@ void decrementSequence(vertex * pred, vertex * head) {
 	vertex*dec=(*pred).next;
 	vertex*succ=(*dec).next;
 	int degNum = (*dec).d1;
-
-	// Prompt message to indicate connection of first vertex
-	cout << endl << "Attempting to connect vertex " << (*dec).label << "(" << degNum << ")" 
-		<< " to the " << (*head).d1 -1 << " other vertices:" << endl;
 	
 	// If the vertex's degree exceeds vertices with available endpoints
 	//if(degNum>((*head).d1-1)) {
@@ -259,62 +221,54 @@ void connectVertices(vertex * head) {
 			}
 		} // nested while
 		
-		// print
-		printList(head);
 		// check if list is still a valid degree/graphic sequence
 		seqIsValid=checkIfValidSequence(succ, head);
 		// advance onto next vertex
 		
 	} //while
+
+	// print final result
+	bool graphBool = isGraphicSequence(succ, head);
+	bool degBool = isDegreeSequence(head);
+
+	printIfGraphic(graphBool, degBool);
 		
 } // void connectEdges(vertex * head)
 
 void main(){
-	cout << "David Murphy - Discrete Math Practice - 09/19/17" << endl;
-	cout << "Is your degree sequence a graphic sequence?" << endl << endl;
+	cout << "v1.1" << endl;
+	cout << "David Murphy - Discrete Math Practice - 10/04/17" << endl;
+	cout << "Is your degree sequence a GRAPHIC sequence?" << endl << endl;
 	
-	char label='.';
 	int deg;
 	bool degBool;
 	bool graphBool;
 
-	// Create list head: (*phead).d1 is the total # of vertices
-	vertex*phead = createList();
+	// Infinite loop for multiple tests
+	while(true){
+		// Create list head: (*phead).d1 is the total # of vertices
+		vertex*phead = createList();
+
+		// PROMPT USER INPUT
+		cout << "Enter a degree sequence (space between numbers): ";
+		std::string line;
+		std::getline(std::cin, line);
+		std::istringstream in(line, std::istringstream::in);
 	
-	// PROMPT USER INPUT
-	while(label != '/') {
-		// create new vertex
-		vertex*newvertex = new vertex;
-		
-		// prompt for vertex label and degree #
-		cout << "Label a vertex using one character: ";
-		cin >> label;
+		while(in >> deg) {
+			if (deg==0){}
+			else {
+			// create new vertex
+			vertex*newvertex = new vertex;
 
-		// A '/' input terminates the selection interface prompt
-		if(label=='/'){break;}
-		cout << "Insert the vertex's degree (deg>0): ";
-		cin >> deg;
-		
-		// Prompt if input is 0
-		while(deg==0){
-			cout << endl;
-			cout << "ERROR: degree must be > 0: ";
-			cin >> deg;
-		}
-		
-		// assign values to new vertex; insert vertex into list
-		(*newvertex).d1=deg;
-		(*newvertex).label=label;
-		insertInOrder(newvertex, phead);
+			// assign values to new vertex; insert vertex into list
+			(*newvertex).d1=deg;
+			insertInOrder(newvertex, phead);
+			}
+		} // while
 
-		// Print list
-		printList(phead);
-
-		// Prompt termination option
-		cout << "[Type '/' when finished]" << endl;
+		cout << endl;
+	
+		connectVertices(phead); 
 	} // while
-
-	cout << endl;
-	
-	connectVertices(phead); 
 } // main()
